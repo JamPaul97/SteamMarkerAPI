@@ -24,6 +24,7 @@ Partial Class Main
     Private Sub InitializeComponent()
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'BtnSearch
@@ -44,11 +45,21 @@ Partial Class Main
         Me.Button1.Text = "Search Basic Example"
         Me.Button1.UseVisualStyleBackColor = True
         '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(360, 30)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(168, 70)
+        Me.Button2.TabIndex = 2
+        Me.Button2.Text = "Search Basic Example"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(363, 110)
+        Me.ClientSize = New System.Drawing.Size(538, 110)
+        Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.BtnSearch)
         Me.Name = "Main"
@@ -59,4 +70,5 @@ Partial Class Main
 
     Friend WithEvents BtnSearch As Button
     Friend WithEvents Button1 As Button
+    Friend WithEvents Button2 As Button
 End Class

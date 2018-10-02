@@ -173,15 +173,10 @@ Public Class Item
             _market_hash_name = value
         End Set
     End Property
-    ''' <summary>
-    ''' Returns the builed URL for the GET command.
-    ''' </summary>
-    ''' <returns></returns>
-    Private Function buildRequestString() As String
-        Return (String.Format("https://steamcommunity.com/market/priceoverview/?appid={0}&currency={1}&market_hash_name={2}", appid, currency, market_hash_name))
-    End Function
     Private Function buildRequestString(ByVal appid As Integer) As String
-        Return (String.Format("https://steamcommunity.com/market/search/render/?query=&start={0}&count={1}&appid={2}&norender=1", appid, currency, market_hash_name))
+        Dim b As Integer = _currency
+        Dim a = (String.Format("https://steamcommunity.com/market/priceoverview/?appid={0}&currency={1}&market_hash_name={2}", _appid, Int(_currency), market_hash_name))
+        Return (String.Format("https://steamcommunity.com/market/priceoverview/?appid={0}&currency={1}&market_hash_name={2}", _appid, Int(_currency), market_hash_name))
     End Function
     Private Function WebRequest(ByVal str As String) As String
         Dim webClient As New WebClient
@@ -193,18 +188,18 @@ Public Class Item
         _currency = pCurreny
         _market_hash_name = pMarket_Hach_Name
         Dim tempItem As New JsonStructure
-        tempItem = JsonConvert.DeserializeObject(Of JsonStructure)(WebRequest(buildRequestString()))
+        tempItem = JsonConvert.DeserializeObject(Of JsonStructure)(WebRequest(buildRequestString(pAppid)))
         Dim tempClass As New _Result
         tempClass.lowest_price = tempItem.lowest_price
         tempClass.median_price = tempItem.median_price
         tempClass.volume = tempItem.volume
         Result = tempClass
     End Sub
-    Friend Class JsonStructure
-        Friend Property success As Boolean
-        Friend Property lowest_price As String
-        Friend Property volume As String
-        Friend Property median_price As String
+    Public Class JsonStructure
+        Public Property success As Boolean
+        Public Property lowest_price As String
+        Public Property volume As String
+        Public Property median_price As String
     End Class
     Public Class _Result
         Public Property lowest_price As String

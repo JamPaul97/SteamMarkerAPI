@@ -36,8 +36,42 @@ Public Class Search
             Results.Add(temp)
         Next
     End Sub
-    Public Sub Dispose()
-
+    Public Sub New(ByVal start As Integer, count As Integer, ByVal Game As Games, ByVal loadImages As Boolean)
+        Dim stopwatch As New Stopwatch
+        stopwatch.Start()
+        _start = start
+        _count = count
+        _appid = Game
+        Dim tempItem As New JsonStructure
+        tempItem = JsonConvert.DeserializeObject(Of JsonStructure)(WebRequest(buildRequestString(True)))
+        For Each item In tempItem.results
+            Dim temp As New Result
+            temp.background_color = ConvertToRbg(item.asset_description.background_color)
+            temp.commodity = item.asset_description.commodity
+            temp.hash_name = item.asset_description.market_hash_name
+            temp.icon_url = item.asset_description.icon_url
+            temp.icon_url_large = item.asset_description.icon_url_large
+            temp.marketable = item.asset_description.marketable
+            temp.market_marketable_restriction = item.asset_description.market_marketable_restriction
+            temp.market_tradeabe_restriction = item.asset_description.market_tradedable_restriction
+            temp.name = item.asset_description.market_name
+            temp.name_color = ConvertToRbg(item.asset_description.name_color)
+            temp.sell_listings = item.sell_listings
+            temp.sell_price.Value = item.sell_price
+            temp.sell_price.Text = item.sell_price_text
+            temp.tradeable = item.asset_description.tradeable
+            temp.type = item.asset_description.type
+            Select Case loadImages
+                Case True
+                    temp.image = getImage(item.asset_description.icon_url)
+                    temp.image_large = getImage(item.asset_description.icon_url_large)
+                Case False
+                    temp.image = Nothing
+                    temp.image_large = Nothing
+            End Select
+            Results.Add(temp)
+        Next
+        stopwatch.Stop()
     End Sub
 #Region "Games"
     Public Enum Games
@@ -216,14 +250,6 @@ Public Class Search
     Private Function buildRequestString(ByVal appid As Games) As String
         Return (String.Format("https://steamcommunity.com/market/search/render/?query=&start={0}&count={1}&appid={2}&norender=1", _start, _count, appid))
     End Function
-    ''' <summary>
-    ''' Returns the builed URL for the GET command.
-    ''' </summary>
-    ''' <param name="Overload">if true then appid must be setted manually.</param>
-    ''' <returns>URL as string.</returns>
-    Private Function buildRequestString(ByVal Overload As Boolean) As String
-        Return (String.Format("https://steamcommunity.com/market/search/render/?query=&start={0}&count={1}&appid={2}&norender=1", _start, _count, _appid))
-    End Function
     Private Function WebRequest(ByVal str As String) As String
         Dim webClient As New WebClient
         Dim result As String = webClient.DownloadString(str)
@@ -249,11 +275,9 @@ Public Class Search
         Blue = Val("&H" & Mid(HexColor, 5, 2))
         Return Color.FromArgb(Red, Green, Blue)
     End Function
-
     Private Sub IDisposable_Dispose() Implements IDisposable.Dispose
         Throw New NotImplementedException()
     End Sub
-
     Private Class JsonStructure
         Public Property success As Boolean
         Public Property start As Integer
@@ -305,7 +329,6 @@ Public Class Search
             End Class
         End Class
     End Class
-
     Public Class Result
         Public Property name As String
         Public Property hash_name As String
